@@ -34,7 +34,6 @@ const CategoryContributionDonut: React.FC = () => {
         orient: 'vertical',
         right: '2%',
         top: 'middle',
-        textStyle: { color: '#94A3B8', fontSize: 11, fontFamily: 'Inter, sans-serif' },
         itemWidth: 10,
         itemHeight: 10,
         itemGap: 12,
@@ -44,9 +43,12 @@ const CategoryContributionDonut: React.FC = () => {
           return `{name|${name}}  {pct|${pct}%}`;
         },
         textStyle: {
+          color: '#94A3B8',
+          fontSize: 11,
+          fontFamily: 'Inter, sans-serif',
           rich: {
             name: { color: '#94A3B8', fontSize: 11, fontFamily: 'Inter, sans-serif' },
-            pct: { color: '#64748B', fontSize: 11, fontFamily: 'Inter, sans-serif' },
+            pct:  { color: '#64748B', fontSize: 11, fontFamily: 'Inter, sans-serif' },
           },
         } as any,
       },

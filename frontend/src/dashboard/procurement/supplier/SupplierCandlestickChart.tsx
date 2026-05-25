@@ -14,8 +14,6 @@ const ALL_SUPPLIERS = [
   { name: 'OfficeBase',    data: [2,  4,  1,  7],  avg: 2.9,  tier: 'B' },
 ];
 
-const TIER_COLORS: Record<string, string> = { A: '#10B981', B: '#3B82F6', C: '#F59E0B' };
-
 const SupplierCandlestickChart: React.FC = () => {
   const { filters } = useProcurementFilters();
 

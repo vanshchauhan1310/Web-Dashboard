@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { AllCommunityModule, ModuleRegistry, type ColDef, type ValueFormatterParams } from 'ag-grid-community';
+import { AllCommunityModule, ModuleRegistry, type ColDef, type ValueFormatterParams, type CellClassParams } from 'ag-grid-community';
 import { useDelayedOrders, type ShippingFilters } from '../../hooks/useAnalytics';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -93,9 +93,9 @@ const DelayedOrdersGrid: React.FC<Props> = ({ filters }) => {
       headerName: 'Delay',
       width: 90,
       type: 'numericColumn',
-      cellStyle: (p) => ({
-        color: p.value >= 7 ? '#EF4444' : p.value >= 3 ? '#F59E0B' : '#FB923C',
-        fontWeight: 700,
+      cellStyle: (p: CellClassParams<DelayedOrder>) => ({
+        color: (p.value as number) >= 7 ? '#EF4444' : (p.value as number) >= 3 ? '#F59E0B' : '#FB923C',
+        fontWeight: '700',
       }),
       valueFormatter: (p: ValueFormatterParams) => `+${p.value}d`,
     },

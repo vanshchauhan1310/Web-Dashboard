@@ -27,8 +27,6 @@ const ALL_SKUS = [
   { sku: 'Sticky Notes',    value: 12,  cat: 'Office Supplies'},
 ];
 
-const TOTAL = ALL_SKUS.reduce((s, d) => s + d.value, 0);
-
 // Assign ABC classes: A = cumulative 0–80%, B = 80–95%, C = 95–100%
 function assignClass(cumPct: number): 'A' | 'B' | 'C' {
   if (cumPct <= 80) return 'A';
