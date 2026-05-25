@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  TrendingUp, LogOut, ArrowRight,
+  LogOut, ArrowRight,
   Shield, Sparkles, Activity,
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
@@ -84,21 +84,8 @@ const DashboardSelector: React.FC = () => {
             animation:'fadeIn .4s ease both' }}>
 
           {/* Brand */}
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-              style={{ background:'linear-gradient(135deg,#3B82F6,#8B5CF6)', boxShadow:'0 4px 14px rgba(59,130,246,0.4)' }}>
-              <TrendingUp className="w-4 h-4 text-white" />
-            </div>
-            <div>
-              <div className="flex items-baseline gap-0.5">
-                <span className="text-[15px] font-bold text-white tracking-tight">Nexus</span>
-                <span className="text-[15px] font-bold tracking-tight"
-                  style={{ background:'linear-gradient(135deg,#3B82F6,#8B5CF6)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>
-                  {' '}Analytics
-                </span>
-              </div>
-              <div className="text-[10px] tracking-widest font-semibold" style={{ color:'#334155' }}>ENTERPRISE PLATFORM</div>
-            </div>
+          <div className="flex items-center">
+            <img src="/logo.png" alt="Logo" style={{ height: 36 }} />
           </div>
 
           {/* Right */}
@@ -253,8 +240,9 @@ const DashboardSelector: React.FC = () => {
 
         {/* ── Footer ── */}
         <footer className="relative text-center pb-8 pt-2" style={{ animation:'fadeIn .6s ease .4s both' }}>
-          <p className="text-[11px]" style={{ color:'#1E293B' }}>
-            Nexus Analytics Platform &nbsp;·&nbsp; Enterprise Edition &nbsp;·&nbsp; &copy; {new Date().getFullYear()}
+          <p className="text-[11px] flex items-center justify-center gap-2" style={{ color:'#1E293B' }}>
+            <img src="/logo_icon.png" alt="Logo" style={{ height: 14, opacity: 0.5 }} />
+            Enterprise Edition &nbsp;·&nbsp; &copy; {new Date().getFullYear()}
           </p>
         </footer>
       </div>

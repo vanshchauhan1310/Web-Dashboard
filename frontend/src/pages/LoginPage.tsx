@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TrendingUp, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import apiClient from '../api/client';
 
@@ -72,22 +72,8 @@ const LoginPage: React.FC = () => {
           }}
         >
           {/* Logo */}
-          <div className="flex items-center gap-3 mb-8">
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)' }}
-            >
-              <TrendingUp className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex items-baseline gap-0.5">
-              <span className="text-xl font-bold text-white tracking-tight">Nexus</span>
-              <span
-                className="text-xl font-bold tracking-tight"
-                style={{ background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
-              >
-                {' '}Analytics
-              </span>
-            </div>
+          <div className="flex items-center mb-8">
+            <img src="/logo.png" alt="Logo" style={{ height: 44 }} />
           </div>
 
           <h1 className="text-2xl font-bold text-white mb-1">Welcome back</h1>
