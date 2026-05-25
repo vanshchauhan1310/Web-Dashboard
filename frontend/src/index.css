@@ -1,0 +1,82 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@theme {
+  /* Backgrounds */
+  --color-background: #060D1A;
+  --color-surface: #0A1525;
+  --color-card: #0E1C30;
+  --color-card-hover: #122340;
+
+  /* Brand Colors */
+  --color-primary: #3B82F6;
+  --color-secondary: #10B981;
+  --color-violet: #8B5CF6;
+  --color-amber: #F59E0B;
+  --color-rose: #F43F5E;
+  --color-cyan: #06B6D4;
+
+  /* Text */
+  --color-textMain: #F1F5F9;
+  --color-textSub: #CBD5E1;
+  --color-textMuted: #64748B;
+
+  /* Typography */
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  :root,
+  .theme-dark {
+    --color-background: #060D1A;
+    --color-surface: #0A1525;
+    --color-card: #0E1C30;
+    --color-card-hover: #122340;
+    --color-textMain: #F1F5F9;
+    --color-textSub: #CBD5E1;
+    --color-textMuted: #64748B;
+    color-scheme: dark;
+  }
+
+  .theme-light {
+    --color-background: #F5F7FB;
+    --color-surface: #FFFFFF;
+    --color-card: #FFFFFF;
+    --color-card-hover: #EEF2F7;
+    --color-textMain: #0F172A;
+    --color-textSub: #334155;
+    --color-textMuted: #64748B;
+    color-scheme: light;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-background text-textMain font-sans antialiased;
+    background-image:
+      radial-gradient(ellipse 90% 60% at 15% -5%, rgba(59, 130, 246, 0.05) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 85% -5%, rgba(139, 92, 246, 0.05) 0%, transparent 55%);
+    background-attachment: fixed;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+
+  .theme-light body {
+    background-image:
+      radial-gradient(ellipse 90% 60% at 15% -5%, rgba(59, 130, 246, 0.08) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 85% -5%, rgba(16, 185, 129, 0.06) 0%, transparent 55%);
+  }
+
+  /* Premium scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
+  * { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.08) transparent; }
+
+  ::selection { background: rgba(59, 130, 246, 0.35); color: #fff; }
+}
