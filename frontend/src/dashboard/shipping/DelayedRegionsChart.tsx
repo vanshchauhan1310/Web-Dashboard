@@ -87,7 +87,7 @@ const DelayedRegionsChart: React.FC<Props> = ({ filters }) => {
         {
           name: 'Avg Delay Days',
           type: 'bar',
-          data: [...avgDelays].reverse().map((val, i) => ({
+          data: [...avgDelays].reverse().map((val) => ({
             value: val,
             itemStyle: {
               color: {

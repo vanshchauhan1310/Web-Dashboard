@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { AllCommunityModule, ModuleRegistry, type ColDef, type ValueFormatterParams, type CellClassParams } from 'ag-grid-community';
+import { AllCommunityModule, ModuleRegistry, type ColDef, type ValueFormatterParams, type CellClassParams, type CellStyle } from 'ag-grid-community';
 import { useDelayedOrders, type ShippingFilters } from '../../hooks/useAnalytics';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -38,46 +38,46 @@ const DelayedOrdersGrid: React.FC<Props> = ({ filters }) => {
       field: 'order_id',
       headerName: 'Order ID',
       width: 130,
-      pinned: 'left',
-      cellStyle: { color: '#60A5FA', fontWeight: 600 },
+      pinned: 'left' as const,
+      cellStyle: { color: '#60A5FA', fontWeight: '600' } as CellStyle,
     },
     {
       field: 'customer',
       headerName: 'Customer',
       flex: 1,
       minWidth: 150,
-      cellStyle: { color: '#F1F5F9' },
+      cellStyle: { color: '#F1F5F9' } as CellStyle,
     },
     {
       field: 'region',
       headerName: 'Region',
       width: 160,
-      cellStyle: { color: '#94A3B8' },
+      cellStyle: { color: '#94A3B8' } as CellStyle,
     },
     {
       field: 'ship_mode',
       headerName: 'Ship Mode',
       width: 140,
-      cellStyle: { color: '#94A3B8' },
+      cellStyle: { color: '#94A3B8' } as CellStyle,
     },
     {
       field: 'order_date',
       headerName: 'Order Date',
       width: 115,
-      cellStyle: { color: '#64748B', fontSize: '12px' },
+      cellStyle: { color: '#64748B', fontSize: '12px' } as CellStyle,
     },
     {
       field: 'ship_date',
       headerName: 'Ship Date',
       width: 115,
-      cellStyle: { color: '#64748B', fontSize: '12px' },
+      cellStyle: { color: '#64748B', fontSize: '12px' } as CellStyle,
     },
     {
       field: 'actual_days',
       headerName: 'Actual Days',
       width: 115,
       type: 'numericColumn',
-      cellStyle: { color: '#F1F5F9' },
+      cellStyle: { color: '#F1F5F9' } as CellStyle,
       valueFormatter: (p: ValueFormatterParams) => `${p.value}d`,
     },
     {
@@ -85,7 +85,7 @@ const DelayedOrdersGrid: React.FC<Props> = ({ filters }) => {
       headerName: 'SLA Days',
       width: 105,
       type: 'numericColumn',
-      cellStyle: { color: '#64748B' },
+      cellStyle: { color: '#64748B' } as CellStyle,
       valueFormatter: (p: ValueFormatterParams) => `${p.value}d`,
     },
     {
@@ -96,7 +96,7 @@ const DelayedOrdersGrid: React.FC<Props> = ({ filters }) => {
       cellStyle: (p: CellClassParams<DelayedOrder>) => ({
         color: (p.value as number) >= 7 ? '#EF4444' : (p.value as number) >= 3 ? '#F59E0B' : '#FB923C',
         fontWeight: '700',
-      }),
+      } as CellStyle),
       valueFormatter: (p: ValueFormatterParams) => `+${p.value}d`,
     },
     {
@@ -104,7 +104,7 @@ const DelayedOrdersGrid: React.FC<Props> = ({ filters }) => {
       headerName: 'Sales',
       width: 110,
       type: 'numericColumn',
-      cellStyle: { color: '#34D399', fontWeight: 600 },
+      cellStyle: { color: '#34D399', fontWeight: '600' } as CellStyle,
       valueFormatter: (p: ValueFormatterParams) => fmtMoney(p.value),
     },
     {

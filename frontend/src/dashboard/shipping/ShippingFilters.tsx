@@ -1,6 +1,6 @@
 import React from 'react';
 import { MapPin, Truck, ChevronDown, X } from 'lucide-react';
-import { useShippingFilterOptions, type ShippingFilters } from '../../hooks/useAnalytics';
+import { useShippingFilterOptions, type ShippingFilters as ShippingFiltersData } from '../../hooks/useAnalytics';
 
 const TIME_PERIODS = ['All Time', 'Last 7 Days', 'Last 30 Days', 'This Year'];
 
@@ -12,8 +12,8 @@ const SELECT_STYLE: React.CSSProperties = {
 };
 
 interface Props {
-  filters: ShippingFilters;
-  onChange: (f: ShippingFilters) => void;
+  filters: ShippingFiltersData;
+  onChange: (f: ShippingFiltersData) => void;
 }
 
 const ShippingFilters: React.FC<Props> = ({ filters, onChange }) => {
@@ -21,7 +21,7 @@ const ShippingFilters: React.FC<Props> = ({ filters, onChange }) => {
   const regions = data?.regions ?? [];
   const shipModes = data?.ship_modes ?? [];
 
-  const set = (patch: Partial<ShippingFilters>) => onChange({ ...filters, ...patch });
+  const set = (patch: Partial<ShippingFiltersData>) => onChange({ ...filters, ...patch });
 
   const hasActive =
     filters.region !== 'All Regions' ||
