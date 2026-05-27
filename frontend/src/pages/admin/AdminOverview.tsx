@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Building2, Users, Database, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { Building2, Users, Database, CheckCircle2, Loader2 } from 'lucide-react';
 import apiClient from '../../api/client';
 
 interface Stats {

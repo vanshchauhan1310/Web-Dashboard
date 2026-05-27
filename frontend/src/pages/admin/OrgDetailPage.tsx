@@ -41,7 +41,7 @@ const AddUserModal: React.FC<{
   onClose: () => void;
   onSave: (d: object) => void;
   loading: boolean;
-}> = ({ orgId, orgDashboards, onClose, onSave, loading }) => {
+}> = ({ orgId: _orgId, orgDashboards, onClose, onSave, loading }) => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -383,7 +383,10 @@ const OrgDetailPage: React.FC = () => {
             </button>
           </div>
           {users.length === 0 ? (
-            <empty-state icon={<Users />} text="No users in this organisation" />
+            <div style={{ textAlign: 'center', padding: '40px 0', color: '#475569' }}>
+              <Users style={{ width: 36, height: 36, margin: '0 auto 10px', opacity: 0.4 }} />
+              <p style={{ fontSize: 14 }}>No users in this organisation</p>
+            </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {users.map(u => (

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, Building2, Users, Database,
-  LogOut, ChevronLeft, ChevronRight, Settings, Shield,
+  LayoutDashboard, Building2, Users,
+  LogOut, ChevronLeft, ChevronRight, Shield,
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
