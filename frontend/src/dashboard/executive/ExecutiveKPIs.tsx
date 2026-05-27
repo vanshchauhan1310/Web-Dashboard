@@ -82,7 +82,7 @@ const ExecutiveKPIs: React.FC<{ filters: ExecutiveFilters }> = ({ filters }) => 
 
   const cards: KPICardProps[] = [
     {
-      label: 'Total Revenue',
+      label: 'Revenue',
       value: fmtMoney(data.revenue),
       sub: 'Gross sales across all markets',
       icon: DollarSign,

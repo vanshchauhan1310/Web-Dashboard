@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import { useQueryClient } from '@tanstack/react-query';
+import DatasourceGate from '../components/DatasourceGate';
 
 const AppLayout = () => {
   const queryClient = useQueryClient();
@@ -22,7 +23,9 @@ const AppLayout = () => {
       <div className="flex flex-1 flex-col overflow-hidden">
         <Topbar onRefresh={handleRefresh} isRefreshing={isRefreshing} />
         <main className="flex-1 overflow-y-auto bg-background p-6 transition-colors duration-200">
-          <Outlet />
+          <DatasourceGate dashboardKey="sales">
+            <Outlet />
+          </DatasourceGate>
         </main>
       </div>
     </div>

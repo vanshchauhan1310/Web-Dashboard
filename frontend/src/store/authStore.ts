@@ -6,7 +6,9 @@ export interface AuthUser {
   email: string;
   full_name: string;
   company: string;
+  organisation_id: number | null;
   dashboards: string[];
+  is_admin: boolean;
 }
 
 interface AuthState {

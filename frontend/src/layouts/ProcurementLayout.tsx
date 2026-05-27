@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import DatasourceGate from '../components/DatasourceGate';
 import { LogOut, RotateCcw } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../store/authStore';
@@ -235,7 +236,9 @@ const ProcurementLayoutInner: React.FC = () => {
         <Topbar onRefresh={handleRefresh} isRefreshing={isRefreshing} />
         <TabNavigation />
         <main className="flex-1 overflow-y-auto bg-background p-6">
-          <Outlet />
+          <DatasourceGate dashboardKey="procurement">
+            <Outlet />
+          </DatasourceGate>
         </main>
       </div>
     </div>

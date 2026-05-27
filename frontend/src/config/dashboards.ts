@@ -23,6 +23,13 @@ export interface MasterDashboard {
   defaultPath: string;
   subRoutes:   SubRoute[];
   /**
+   * Logical datasource key this dashboard requires.
+   * Admin must add a datasource tagged with this exact key for the org.
+   * Charts only render when the org's active datasource matches this key.
+   * Set to null to always render (no datasource check).
+   */
+  requiredDatasourceKey: string | null;
+  /**
    * Companies that have access to this dashboard.
    * Must match the `company` field in seed_users.py.
    * Used for developer reference only — actual access is enforced
@@ -53,6 +60,7 @@ export const MASTER_DASHBOARDS: Record<string, MasterDashboard> = {
       { name: 'Products',        path: '/sales/products',  icon: PackageSearch,    label: 'Performance'  },
       { name: 'Shipping Ops',    path: '/sales/shipping',  icon: ShipWheel,        label: 'Operations'   },
     ],
+    requiredDatasourceKey: 'sales_db',
     assignedTo: [
       'Nexus Analytics',   // admin@nexus.com
       'Acme Corp',         // client@acmecorp.com
@@ -75,10 +83,11 @@ export const MASTER_DASHBOARDS: Record<string, MasterDashboard> = {
       { name: 'Purchase Orders',      path: '/procurement/orders',   icon: ClipboardList,  label: 'Orders'       },
       { name: 'Inventory Analysis',   path: '/procurement/inventory',icon: Package,        label: 'Inventory'    },
     ],
+    requiredDatasourceKey: 'procurement_db',
     assignedTo: [
       // Add company names here once you assign procurement access
       // e.g. 'Acme Corp',
-      'Acme Corp',        //
+      'Acme Corp',
     ],
   },
 
@@ -93,6 +102,7 @@ export const MASTER_DASHBOARDS: Record<string, MasterDashboard> = {
   //   stats:       'N dashboards · Live data',
   //   defaultPath: '/example/overview',
   //   subRoutes:   [],
+  //   requiredDatasourceKey: 'example_db',   // tag admin must set on the datasource
   //   assignedTo:  ['Company Name'],
   // },
 

@@ -5,18 +5,27 @@ import { AllCommunityModule } from 'ag-grid-community';
 import { ThemeProvider } from './context/ThemeContext';
 
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
 import LoginPage from './pages/LoginPage';
 import DashboardSelector from './pages/DashboardSelector';
 import AppLayout from './layouts/AppLayout';
 import ProcurementLayout from './layouts/ProcurementLayout';
+import AdminLayout from './layouts/AdminLayout';
+
 import Dashboard from './pages/Dashboard';
 import GeographyDashboard from './pages/GeographyDashboard';
 import ProductPerformanceDashboard from './pages/ProductPerformanceDashboard';
 import ShippingOperationsDashboard from './pages/ShippingOperationsDashboard';
+
 import SpendOverviewDashboard from './pages/procurement/SpendOverviewDashboard';
 import SupplierPerformanceDashboard from './pages/procurement/SupplierPerformanceDashboard';
 import PurchaseOrdersDashboard from './pages/procurement/PurchaseOrdersDashboard';
 import InventoryAnalysisDashboard from './pages/procurement/InventoryAnalysisDashboard';
+
+import AdminOverview from './pages/admin/AdminOverview';
+import OrganisationsPage from './pages/admin/OrganisationsPage';
+import OrgDetailPage from './pages/admin/OrgDetailPage';
+import AllUsersPage from './pages/admin/AllUsersPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,7 +56,22 @@ function App() {
                 }
               />
 
-              {/* Sales master dashboard */}
+              {/* ── Admin Portal ── */}
+              <Route
+                path="/admin"
+                element={
+                  <AdminRoute>
+                    <AdminLayout />
+                  </AdminRoute>
+                }
+              >
+                <Route index element={<AdminOverview />} />
+                <Route path="orgs" element={<OrganisationsPage />} />
+                <Route path="orgs/:orgId" element={<OrgDetailPage />} />
+                <Route path="users" element={<AllUsersPage />} />
+              </Route>
+
+              {/* ── Sales master dashboard ── */}
               <Route
                 path="/sales"
                 element={
@@ -63,7 +87,7 @@ function App() {
                 <Route path="shipping" element={<ShippingOperationsDashboard />} />
               </Route>
 
-              {/* Procurement master dashboard */}
+              {/* ── Procurement master dashboard ── */}
               <Route
                 path="/procurement"
                 element={
@@ -73,9 +97,9 @@ function App() {
                 }
               >
                 <Route index element={<Navigate to="spend" replace />} />
-                <Route path="spend"    element={<SpendOverviewDashboard />} />
-                <Route path="supplier" element={<SupplierPerformanceDashboard />} />
-                <Route path="orders"   element={<PurchaseOrdersDashboard />} />
+                <Route path="spend"     element={<SpendOverviewDashboard />} />
+                <Route path="supplier"  element={<SupplierPerformanceDashboard />} />
+                <Route path="orders"    element={<PurchaseOrdersDashboard />} />
                 <Route path="inventory" element={<InventoryAnalysisDashboard />} />
               </Route>
 

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import type { EChartsCoreOption } from 'echarts';
 import EChartWrapper from '../../charts/echarts/EChartWrapper';
 import {
@@ -230,7 +230,11 @@ export const ExecutiveParetoCountryChart: React.FC<{ filters: ExecutiveFilters }
   const { data, isLoading, isError } = useExecutiveParetoCountries(filters);
 
   const option = useMemo<EChartsCoreOption>(() => {
-    if (!data) return {};
+    if (!data || data.length === 0) return {};
+
+    // Find the min cumulative_pct so the right axis zooms in to show variation
+    const minCumPct = data[0]?.cumulative_pct ?? 0;
+    const yMin = Math.max(0, Math.floor(minCumPct / 10) * 10 - 10);
 
     return {
       tooltip: {
@@ -266,7 +270,7 @@ export const ExecutiveParetoCountryChart: React.FC<{ filters: ExecutiveFilters }
         },
         {
           type: 'value',
-          min: 0,
+          min: yMin,
           max: 100,
           axisLabel: { ...AXIS_LABEL, formatter: '{value}%' },
           splitLine: { show: false },
