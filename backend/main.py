@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 # from sqlalchemy.pool import NullPool
 from dotenv import load_dotenv
+from urllib.parse import quote_plus
 import os
 
 # Load environment variables from .env
@@ -13,8 +14,8 @@ HOST = os.getenv("host")
 PORT = os.getenv("port")
 DBNAME = os.getenv("dbname")
 
-# Construct the SQLAlchemy connection string
-DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+# Construct the SQLAlchemy connection string (URL-encode to handle special chars like @)
+DATABASE_URL = f"postgresql+psycopg2://{quote_plus(USER)}:{quote_plus(PASSWORD)}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
 
 # Create the SQLAlchemy engine
 engine = create_engine(DATABASE_URL)

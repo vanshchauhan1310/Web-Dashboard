@@ -541,7 +541,13 @@ async def test_datasource(
 
     if not success:
         msg = error or "Unknown error"
-        if "getaddrinfo" in msg or "11001" in msg or "Name or service" in msg:
+        if "127.0.0.1" in (ds.host or "") or "localhost" in (ds.host or ""):
+            msg += (
+                " — The host '127.0.0.1' / 'localhost' resolves to the backend server itself, "
+                "not your local machine. Use a publicly reachable database host "
+                "(e.g. AWS RDS, PlanetScale, Railway, Supabase, etc.)."
+            )
+        elif "getaddrinfo" in msg or "11001" in msg or "Name or service" in msg:
             msg += " — DNS lookup failed. Check: (1) Supabase project is not paused, (2) host field contains only the hostname (not the full URL)."
         raise HTTPException(status_code=422, detail=f"Connection failed: {msg}")
     return ds

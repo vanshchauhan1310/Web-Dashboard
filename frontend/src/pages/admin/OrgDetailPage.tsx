@@ -323,7 +323,9 @@ const OrgDetailPage: React.FC = () => {
     onError: (err: any) => {
       const detail: string = err?.response?.data?.detail ?? 'Connection failed';
       let hint = '';
-      if (detail.includes('getaddrinfo') || detail.includes('11001') || detail.includes('Name or service not known')) {
+      if (detail.includes("127.0.0.1") || detail.includes("localhost")) {
+        hint = '\n\nHint: Your backend is deployed on a cloud server, so "127.0.0.1" / "localhost" refers to that server — not your local machine.\n  • Use a publicly accessible database host (e.g. AWS RDS, PlanetScale, Railway, Supabase, etc.)\n  • Local databases are NOT reachable from a deployed backend.';
+      } else if (detail.includes('getaddrinfo') || detail.includes('11001') || detail.includes('Name or service not known')) {
         hint = '\n\nHint: DNS lookup failed for the host.\n  • Check if your Supabase project is paused (supabase.com → restore it)\n  • Verify the Host field contains only the hostname, e.g.:\n    db.xxxxxxxxxxxx.supabase.co\n  • Do NOT paste the full connection URL into the Host field';
       } else if (detail.includes('password') || detail.includes('authentication')) {
         hint = '\n\nHint: Wrong username or password.';
