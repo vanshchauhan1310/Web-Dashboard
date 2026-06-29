@@ -9,6 +9,7 @@ export interface AuthUser {
   organisation_id: number | null;
   dashboards: string[];
   is_admin: boolean;
+  is_builder: boolean;
 }
 
 interface AuthState {

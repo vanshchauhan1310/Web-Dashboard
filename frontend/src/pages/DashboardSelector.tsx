@@ -1,15 +1,16 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
   LogOut, ArrowRight,
   Shield, Sparkles, Activity, Database,
-  CheckCircle2, XCircle, Clock, Settings,
+  CheckCircle2, XCircle, Clock, Settings, Plus, Layers, Wrench,
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useDataSourceStore } from '../store/dataSourceStore';
 import type { DataSourceOption } from '../store/dataSourceStore';
 import { MASTER_DASHBOARDS } from '../config/dashboards';
+import CreateDashboardWizard from './CreateDashboardWizard';
 import apiClient from '../api/client';
 
 function timeGreeting(): string {
@@ -40,6 +41,14 @@ const DashboardSelector: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
   const { sources, selectedId, setSources, selectSource } = useDataSourceStore();
+  const [showWizard, setShowWizard] = useState(false);
+
+  // Fetch org's custom master dashboards
+  const { data: customDashboards } = useQuery({
+    queryKey: ['master-dashboards'],
+    queryFn: async () => (await apiClient.get('/builder/master-dashboards')).data,
+    enabled: !!user,
+  });
 
   // Fetch org's data sources (only if user has an org)
   const { data: fetchedSources } = useQuery<DataSourceOption[]>({
@@ -53,7 +62,8 @@ const DashboardSelector: React.FC = () => {
   }, [fetchedSources, setSources]);
 
   const allowedKeys: string[] = user?.dashboards ?? [];
-  const available = allowedKeys.map(k => MASTER_DASHBOARDS[k]).filter(Boolean);
+  const hardcodedDashboards = allowedKeys.map(k => MASTER_DASHBOARDS[k]).filter(Boolean);
+  const available = [...hardcodedDashboards, ...(customDashboards || [])];
 
   const firstName = user?.full_name?.split(' ')[0] || 'there';
   const company   = user?.company || '';
@@ -221,62 +231,98 @@ const DashboardSelector: React.FC = () => {
               </div>
             ) : (
               <div className="w-full max-w-3xl flex flex-col gap-5">
-                {available.map((dashboard, idx) => {
+                {available.map((dashboard: any, idx: number) => {
                   const Icon = dashboard.icon;
+                  const gradient: string = dashboard.gradient ?? 'linear-gradient(135deg,#6366F1,#8B5CF6)';
+                  const glow: string = dashboard.glow ?? 'rgba(99,102,241,0.45)';
+                  const gradientColors = gradient.match(/#[A-Fa-f0-9]{6}/g);
+                  const color0 = gradientColors?.[0] ?? '#6366F1';
+                  const color1 = gradientColors?.[1] ?? '#8B5CF6';
+                  const navPath = 'defaultPath' in dashboard
+                    ? dashboard.defaultPath
+                    : `/view/${dashboard.id}`;
                   return (
-                    <button key={dashboard.key} onClick={() => navigate(dashboard.defaultPath)}
+                    <button key={dashboard.key || `custom-${dashboard.id}`} onClick={() => navigate(navPath)}
                       className="card-hover text-left w-full relative overflow-hidden rounded-2xl"
                       style={{ animation:`fadeUp .5s ease ${0.2 + idx * 0.1}s both`, background:'linear-gradient(135deg,rgba(14,28,48,0.95),rgba(10,20,38,0.98))', border:'1px solid rgba(255,255,255,0.08)', boxShadow:'0 8px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)' }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = `0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px ${dashboard.gradient.includes('#3B82F6') ? 'rgba(59,130,246,0.3)' : 'rgba(139,92,246,0.3)'}, inset 0 1px 0 rgba(255,255,255,0.08)`; (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.14)'; }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = `0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px ${gradient.includes('#3B82F6') ? 'rgba(59,130,246,0.3)' : 'rgba(139,92,246,0.3)'}, inset 0 1px 0 rgba(255,255,255,0.08)`; (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.14)'; }}
                       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)'; (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.08)'; }}>
 
                       <div className="absolute top-0 left-0 right-0 h-px"
-                        style={{ background:`linear-gradient(90deg,transparent 0%,${dashboard.gradient.match(/#[A-Fa-f0-9]{6}/g)?.[0] ?? '#3B82F6'}80 40%,${dashboard.gradient.match(/#[A-Fa-f0-9]{6}/g)?.[1] ?? '#8B5CF6'}80 60%,transparent 100%)` }} />
+                        style={{ background:`linear-gradient(90deg,transparent 0%,${color0}80 40%,${color1}80 60%,transparent 100%)` }} />
 
                       <div className="relative flex items-center gap-7 p-7">
                         <div className="shrink-0">
                           <div className="w-16 h-16 rounded-2xl flex items-center justify-center relative"
-                            style={{ background:dashboard.gradient, boxShadow:`0 8px 28px ${dashboard.glow}` }}>
-                            <Icon className="w-7 h-7 text-white" />
+                            style={{ background: gradient, boxShadow:`0 8px 28px ${glow}` }}>
+                            {Icon ? <Icon className="w-7 h-7 text-white" /> : <Layers className="w-7 h-7 text-white" />}
                             <div className="absolute inset-0 rounded-2xl" style={{ background:'linear-gradient(135deg,rgba(255,255,255,0.18) 0%,transparent 60%)' }} />
                           </div>
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-4 mb-2">
-                            <h2 className="text-[20px] font-bold text-white leading-tight">{dashboard.title}</h2>
-                            <div className="flex items-center gap-1.5 shrink-0 text-[12px] font-semibold mt-0.5 transition-all duration-200"
-                              style={{ color: dashboard.gradient.match(/#[A-Fa-f0-9]{6}/g)?.[0] ?? '#3B82F6' }}>
-                              Enter <ArrowRight className="w-3.5 h-3.5" />
-                            </div>
-                          </div>
-                          <p className="text-[13px] leading-relaxed mb-4" style={{ color:'#64748B' }}>
-                            {dashboard.description}
-                          </p>
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {dashboard.subRoutes.map(s => {
-                              const RouteIcon = s.icon;
-                              return (
-                                <span key={s.path} className="flex items-center gap-1.5 text-[11px] font-medium px-3 py-1.5 rounded-lg"
-                                  style={{ background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.07)', color:'#94A3B8' }}>
-                                  <RouteIcon className="w-3 h-3 opacity-70" />
-                                  {s.name}
-                                </span>
-                              );
-                            })}
-                          </div>
-                          <div className="flex items-center gap-5" style={{ borderTop:'1px solid rgba(255,255,255,0.05)', paddingTop:14 }}>
-                            <div className="flex items-center gap-1.5 text-[11px]" style={{ color:'#334155' }}>
-                              <Activity className="w-3 h-3" style={{ color:'#10B981' }} />
-                              <span style={{ color:'#475569' }}>{dashboard.stats}</span>
-                            </div>
-                            {showDataSources && selectedId && (
-                              <div className="flex items-center gap-1.5 text-[11px]" style={{ color:'#475569' }}>
-                                <Database className="w-3 h-3" style={{ color:'#3B82F6' }} />
-                                <span>{sources.find(s => s.id === selectedId)?.name ?? 'Default DB'}</span>
-                              </div>
-                            )}
-                          </div>
+              {'subRoutes' in dashboard ? (
+                <>
+                  <div className="flex items-start justify-between gap-4 mb-2">
+                    <h2 className="text-[20px] font-bold text-white leading-tight">{dashboard.title}</h2>
+                    <div className="flex items-center gap-1.5 shrink-0 text-[12px] font-semibold mt-0.5 transition-all duration-200"
+                      style={{ color: '#6366F1' }}>
+                      Enter <ArrowRight className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                  <p className="text-[13px] leading-relaxed mb-4" style={{ color:'#64748B' }}>
+                    {dashboard.description}
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {dashboard.subRoutes.map((s: { name: string; path: string; icon: React.ElementType }) => {
+                      const RouteIcon = s.icon;
+                      return (
+                        <span key={s.path} className="flex items-center gap-1.5 text-[11px] font-medium px-3 py-1.5 rounded-lg"
+                          style={{ background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.07)', color:'#94A3B8' }}>
+                          <RouteIcon className="w-3 h-3 opacity-70" />
+                          {s.name}
+                        </span>
+                      );
+                    })}
+                  </div>
+                  <div className="flex items-center gap-5" style={{ borderTop:'1px solid rgba(255,255,255,0.05)', paddingTop:14 }}>
+                    <div className="flex items-center gap-1.5 text-[11px]" style={{ color:'#334155' }}>
+                      <Activity className="w-3 h-3" style={{ color:'#10B981' }} />
+                      <span style={{ color:'#475569' }}>{dashboard.stats}</span>
+                    </div>
+                    {showDataSources && selectedId && (
+                      <div className="flex items-center gap-1.5 text-[11px]" style={{ color:'#475569' }}>
+                        <Database className="w-3 h-3" style={{ color:'#3B82F6' }} />
+                        <span>{sources.find(s => s.id === selectedId)?.name ?? 'Default DB'}</span>
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-start justify-between gap-4 mb-2">
+                    <h2 className="text-[20px] font-bold text-white leading-tight">{dashboard.title}</h2>
+                    <div className="flex items-center gap-1.5 shrink-0 text-[12px] font-semibold mt-0.5" style={{ color: '#6366F1' }}>
+                      Open <ArrowRight className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                  <p className="text-[13px] leading-relaxed mb-4" style={{ color:'#64748B' }}>
+                    {dashboard.description || `Uses ${sources.find((s: DataSourceOption) => s.id === dashboard.datasource_id)?.name || 'default'} data source`}
+                  </p>
+                  <div className="flex items-center gap-5" style={{ borderTop:'1px solid rgba(255,255,255,0.05)', paddingTop:14 }}>
+                    <div className="flex items-center gap-1.5 text-[11px]" style={{ color:'#475569' }}>
+                      <Layers className="w-3 h-3" style={{ color:'#6366F1' }} />
+                      <span>{dashboard.template_type === 'sidebar' ? 'Sidebar' : 'Selector'} template</span>
+                    </div>
+                    {dashboard.datasource_id && (
+                      <div className="flex items-center gap-1.5 text-[11px]" style={{ color:'#475569' }}>
+                        <Database className="w-3 h-3" style={{ color:'#3B82F6' }} />
+                        <span>{sources.find((s: DataSourceOption) => s.id === dashboard.datasource_id)?.name ?? 'DB'}</span>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
                         </div>
                       </div>
                     </button>
@@ -286,6 +332,29 @@ const DashboardSelector: React.FC = () => {
             )}
           </main>
         </div>
+
+        {/* Builder Studio shortcut — only for developers */}
+        {user?.is_builder && (
+          <div className="fixed bottom-8 right-8 z-40 flex flex-col items-end gap-3">
+            <button
+              onClick={() => navigate('/builder')}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all hover:scale-105"
+              style={{ background:'rgba(245,158,11,0.12)', border:'1px solid rgba(245,158,11,0.3)', color:'#FCD34D', backdropFilter:'blur(8px)' }}
+            >
+              <Wrench className="w-4 h-4" /> Builder Studio
+            </button>
+            <button
+              onClick={() => setShowWizard(true)}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all hover:scale-105"
+              style={{ background:'linear-gradient(135deg,#6366F1,#8B5CF6)', color:'#fff', boxShadow:'0 8px 32px rgba(99,102,241,0.45)' }}
+            >
+              <Plus className="w-4 h-4" /> Create Dashboard
+            </button>
+          </div>
+        )}
+
+        {/* Wizard modal */}
+        {showWizard && <CreateDashboardWizard onClose={() => setShowWizard(false)} />}
 
         {/* Footer */}
         <footer className="relative text-center pb-8 pt-2" style={{ animation:'fadeIn .6s ease .4s both' }}>

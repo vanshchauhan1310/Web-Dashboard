@@ -1,4 +1,5 @@
-import { LogOut } from 'lucide-react';
+import { LogOut, Wrench } from 'lucide-react';
+import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { useAuthStore } from '../store/authStore';
@@ -71,7 +72,7 @@ const Sidebar = () => {
         <p className="px-3 text-[10px] font-semibold uppercase tracking-widest text-textMuted mb-2 mt-2">
           {dashTitle}
         </p>
-        {navItems.map((item) => {
+        {navItems.map((item: { path: string; name: string; label: string; icon: React.ElementType }) => {
           const isActive = location.pathname === item.path;
           return (
             <Link key={item.path} to={item.path}
@@ -103,6 +104,33 @@ const Sidebar = () => {
             </Link>
           );
         })}
+        {user?.is_builder && (
+          <>
+            <div className="mx-0 my-2 h-px" style={{ background: 'rgba(255,255,255,0.05)' }} />
+            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest text-textMuted mb-1 mt-1">
+              Developer
+            </p>
+            {[{ path: '/builder', name: 'Builder Studio', label: 'Design Dashboards', Icon: Wrench }].map(({ path, name, label, Icon }) => {
+              const isActive = location.pathname.startsWith('/builder');
+              return (
+                <Link key={path} to={path}
+                  className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150 relative ${isActive ? 'text-white' : 'text-textMuted hover:text-textSub hover:bg-white/[0.04]'}`}
+                  style={isActive ? { background: 'rgba(245,158,11,0.1)', boxShadow: 'inset 0 0 0 1px rgba(245,158,11,0.2)' } : undefined}
+                >
+                  {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-r-full" style={{ background: 'linear-gradient(180deg,#F59E0B,#F59E0B88)' }} />}
+                  <div className={`w-8 h-8 rounded-md flex items-center justify-center shrink-0 transition-all duration-150 ${isActive ? '' : 'text-textMuted group-hover:text-textSub'}`}
+                    style={isActive ? { background: 'rgba(245,158,11,0.15)', color: '#FCD34D' } : { background: 'rgba(255,255,255,0.04)' }}>
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-[13px] leading-tight">{name}</span>
+                    <span className="text-[11px] text-textMuted leading-tight mt-0.5">{label}</span>
+                  </div>
+                </Link>
+              );
+            })}
+          </>
+        )}
       </nav>
 
       {/* ── User footer ── */}

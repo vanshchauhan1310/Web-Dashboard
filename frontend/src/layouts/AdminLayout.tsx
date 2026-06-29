@@ -7,9 +7,9 @@ import {
 import { useAuthStore } from '../store/authStore';
 
 const NAV = [
-  { to: '/admin',          icon: LayoutDashboard, label: 'Overview',      end: true },
-  { to: '/admin/orgs',     icon: Building2,        label: 'Organisations'            },
-  { to: '/admin/users',    icon: Users,            label: 'All Users'                },
+  { to: '/admin',      icon: LayoutDashboard, label: 'Overview',      end: true },
+  { to: '/admin/orgs',  icon: Building2,        label: 'Organisations'            },
+  { to: '/admin/users', icon: Users,            label: 'All Users'                },
 ];
 
 const AdminLayout: React.FC = () => {

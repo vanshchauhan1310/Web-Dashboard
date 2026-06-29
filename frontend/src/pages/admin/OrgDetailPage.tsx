@@ -9,7 +9,7 @@ import {
 import apiClient from '../../api/client';
 
 interface Org { id: number; name: string; dashboards: string; is_active: boolean; user_count: number; datasource_count: number; }
-interface OrgUser { id: number; email: string; full_name: string | null; dashboards: string[]; is_active: boolean; }
+interface OrgUser { id: number; email: string; full_name: string | null; dashboards: string[]; is_active: boolean; is_builder: boolean; }
 interface DS {
   id: number; organisation_id: number; name: string; db_type: string;
   host: string | null; port: number | null; database_name: string | null;
@@ -46,6 +46,7 @@ const AddUserModal: React.FC<{
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
+  const [isBuilder, setIsBuilder] = useState(false);
   const [dashes, setDashes] = useState<string[]>(
     orgDashboards.split(',').map(s => s.trim()).filter(Boolean)
   );
@@ -84,12 +85,28 @@ const AddUserModal: React.FC<{
               })}
             </div>
           </div>
+          <div>
+            <label style={labelStyle}>Role</label>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button type="button" onClick={() => setIsBuilder(false)} style={{ padding: '6px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: !isBuilder ? '1px solid #3B82F6' : '1px solid rgba(255,255,255,0.1)', background: !isBuilder ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.03)', color: !isBuilder ? '#60A5FA' : '#64748B' }}>
+                Employee
+              </button>
+              <button type="button" onClick={() => setIsBuilder(true)} style={{ padding: '6px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: isBuilder ? '1px solid #F59E0B' : '1px solid rgba(255,255,255,0.1)', background: isBuilder ? 'rgba(245,158,11,0.15)' : 'rgba(255,255,255,0.03)', color: isBuilder ? '#FCD34D' : '#64748B' }}>
+                Developer
+              </button>
+            </div>
+            {isBuilder && (
+              <p style={{ fontSize: 11, color: '#94A3B8', marginTop: 6 }}>
+                Developer can access Builder Studio to create and design dashboards.
+              </p>
+            )}
+          </div>
         </div>
         <div style={{ display: 'flex', gap: 10, marginTop: 22, justifyContent: 'flex-end' }}>
           <button onClick={onClose} style={cancelBtnStyle}>Cancel</button>
           <button
             disabled={!email.trim() || !password.trim() || loading}
-            onClick={() => onSave({ email: email.trim(), full_name: name, password, dashboards: dashes })}
+            onClick={() => onSave({ email: email.trim(), full_name: name, password, dashboards: dashes, is_builder: isBuilder })}
             style={{ ...saveBtnStyle, opacity: (!email || !password || loading) ? 0.6 : 1, display: 'flex', alignItems: 'center', gap: 6 }}
           >
             {loading && <Loader2 style={{ width: 13, height: 13, animation: 'spin 1s linear infinite' }} />}
@@ -405,10 +422,13 @@ const OrgDetailPage: React.FC = () => {
                     <p style={{ fontSize: 13, fontWeight: 600, color: '#F1F5F9' }}>{u.full_name || '—'}</p>
                     <p style={{ fontSize: 11, color: '#64748B' }}>{u.email}</p>
                   </div>
-                  <div style={{ display: 'flex', gap: 5 }}>
+                  <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', alignItems: 'center' }}>
                     {u.dashboards.map(d => (
                       <span key={d} style={{ fontSize: 10, padding: '2px 7px', borderRadius: 20, background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.15)', color: '#60A5FA', fontWeight: 600 }}>{d}</span>
                     ))}
+                    {u.is_builder && (
+                      <span style={{ fontSize: 10, padding: '2px 7px', borderRadius: 20, background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)', color: '#FCD34D', fontWeight: 600 }}>Developer</span>
+                    )}
                   </div>
                   <div style={{ display: 'flex', gap: 6 }}>
                     <button title="Reset Password" onClick={() => setResetPwUser(u)} style={iconBtnStyle}><KeyRound style={{ width: 13, height: 13 }} /></button>

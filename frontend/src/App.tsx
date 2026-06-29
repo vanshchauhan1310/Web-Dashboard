@@ -6,6 +6,7 @@ import { ThemeProvider } from './context/ThemeContext';
 
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
+import BuilderRoute from './components/BuilderRoute';
 import LoginPage from './pages/LoginPage';
 import DashboardSelector from './pages/DashboardSelector';
 import AppLayout from './layouts/AppLayout';
@@ -26,6 +27,16 @@ import AdminOverview from './pages/admin/AdminOverview';
 import OrganisationsPage from './pages/admin/OrganisationsPage';
 import OrgDetailPage from './pages/admin/OrgDetailPage';
 import AllUsersPage from './pages/admin/AllUsersPage';
+import BuilderLayout from './layouts/BuilderLayout';
+import CustomBuilderLayout from './layouts/CustomBuilderLayout';
+import CustomDashboardLayout from './layouts/CustomDashboardLayout';
+import CustomDashboardPage from './pages/CustomDashboardPage';
+import BuilderStudio from './pages/BuilderStudio';
+import MasterDashboardEditor from './pages/MasterDashboardEditor';
+import CustomDashboard from './pages/CustomDashboard';
+import ChartBuilder from './pages/ChartBuilder';
+import SubDashboardListPage from './pages/SubDashboardListPage';
+import DashboardWidgetEditor from './pages/admin/DashboardWidgetEditor';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -101,6 +112,58 @@ function App() {
                 <Route path="supplier"  element={<SupplierPerformanceDashboard />} />
                 <Route path="orders"    element={<PurchaseOrdersDashboard />} />
                 <Route path="inventory" element={<InventoryAnalysisDashboard />} />
+              </Route>
+
+              {/* ── Custom Builder (legacy: dashboard + chart builder) ── */}
+              <Route
+                path="/custom"
+                element={
+                  <ProtectedRoute>
+                    <BuilderLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<Navigate to="dashboard" replace />} />
+                <Route path="dashboard" element={<CustomDashboard />} />
+                <Route path="builder"   element={<ChartBuilder />} />
+              </Route>
+
+              {/* ── Custom Dashboard Builder (new: no DatasourceGate) ── */}
+              <Route
+                path="/custom/builder-pages"
+                element={
+                  <ProtectedRoute>
+                    <CustomBuilderLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path=":masterId/dashboards" element={<SubDashboardListPage />} />
+                <Route path="dashboards/:dashboardId/edit" element={<DashboardWidgetEditor />} />
+              </Route>
+
+              {/* ── Builder Studio (tableau developer only) ── */}
+              <Route
+                path="/builder"
+                element={
+                  <BuilderRoute>
+                    <CustomBuilderLayout />
+                  </BuilderRoute>
+                }
+              >
+                <Route index element={<BuilderStudio />} />
+                <Route path=":masterId" element={<MasterDashboardEditor />} />
+              </Route>
+
+              {/* ── Published custom dashboard viewer (employees) ── */}
+              <Route
+                path="/view/:masterId"
+                element={
+                  <ProtectedRoute>
+                    <CustomDashboardLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path=":subDashboardId" element={<CustomDashboardPage />} />
               </Route>
 
               {/* Fallback */}
