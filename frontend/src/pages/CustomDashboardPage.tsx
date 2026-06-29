@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2, BarChart3, AlertCircle } from 'lucide-react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
@@ -79,7 +79,6 @@ const ChartTile: React.FC<{ widget: ChartWidget }> = ({ widget }) => {
 // ── Main page ─────────────────────────────────────────────────────────────────
 const CustomDashboardPage: React.FC = () => {
   const { masterId, subDashboardId } = useParams<{ masterId: string; subDashboardId: string }>();
-  const navigate = useNavigate();
 
   const { data: masters } = useQuery<MasterDashboard[]>({
     queryKey: ['master-dashboards'],
@@ -88,7 +87,7 @@ const CustomDashboardPage: React.FC = () => {
   });
   const master = masters?.find(d => d.id === Number(masterId)) ?? null;
 
-  const { data: sub } = useQuery<SubDashboard>({
+  const { data: sub } = useQuery<SubDashboard | null>({
     queryKey: ['viewer-sub-info', subDashboardId],
     queryFn: () => apiClient.get(`/builder/master-dashboards/${masterId}/dashboards`)
       .then(r => (r.data as SubDashboard[]).find(s => s.id === Number(subDashboardId)) ?? null),

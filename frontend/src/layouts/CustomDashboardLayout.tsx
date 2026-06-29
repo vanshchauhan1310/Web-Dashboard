@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useParams, useLocation, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useQueryClient } from '@tanstack/react-query';
-import { LogOut, Layers, LayoutGrid, RefreshCw } from 'lucide-react';
+import { LogOut, LayoutGrid } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import apiClient from '../api/client';
 import Topbar from './Topbar';
@@ -38,7 +38,7 @@ const CustomDashboardLayout: React.FC = () => {
   const compInit  = company ? companyInitials(company) : 'NA';
   const userInit  = (user?.full_name ?? user?.email ?? 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
 
-  const { data: master } = useQuery<MasterDashboard>({
+  const { data: master } = useQuery<MasterDashboard | null>({
     queryKey: ['viewer-master', masterId],
     queryFn: () => apiClient.get('/builder/master-dashboards')
       .then(r => (r.data as MasterDashboard[]).find(d => d.id === Number(masterId)) ?? null),
@@ -115,7 +115,7 @@ const CustomDashboardLayout: React.FC = () => {
           </p>
 
           {/* Sub-dashboard pages */}
-          {subDashboards.map((sub, i) => {
+          {subDashboards.map((sub) => {
             const path     = `/view/${masterId}/${sub.id}`;
             const isActive = location.pathname === path;
             return (
