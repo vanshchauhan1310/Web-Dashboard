@@ -26,6 +26,7 @@ class MeResponse(BaseModel):
     organisation_id: int | None
     dashboards: list[str]
     is_admin: bool
+    is_builder: bool
 
 
 @router.post("/login", response_model=TokenResponse)
@@ -62,6 +63,7 @@ async def login(
         "organisation_id": user.organisation_id,
         "dashboards": user.dashboards or ["sales"],
         "is_admin": user.is_admin,
+        "is_builder": user.is_builder,
     })
     return TokenResponse(access_token=token)
 
@@ -83,4 +85,5 @@ async def me(current_user: User = Depends(get_current_user), db: AsyncSession = 
         organisation_id=current_user.organisation_id,
         dashboards=current_user.dashboards or ["sales"],
         is_admin=current_user.is_admin,
+        is_builder=current_user.is_builder,
     )

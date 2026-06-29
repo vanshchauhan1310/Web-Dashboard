@@ -5,5 +5,10 @@ from app.models.datasource import DataSource
 from app.models.product import Product
 from app.models.customer import Customer
 from app.models.order import Order
+from app.models.dashboard_builder import MasterDashboard, SubDashboard, ChartWidget
 
-__all__ = ["Base", "User", "Organisation", "DataSource", "Product", "Customer", "Order"]
+__all__ = [
+    "Base", "User", "Organisation", "DataSource",
+    "Product", "Customer", "Order",
+    "MasterDashboard", "SubDashboard", "ChartWidget",
+]

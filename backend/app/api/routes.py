@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends
 from app.api import analytics, dashboard
 from app.api import admin as admin_router
+from app.api import builder as builder_router
+from app.api import dashboard_builder as dashboard_builder_router
 from app.auth import router as auth_router
 from app.auth.deps import get_current_user
 
@@ -17,4 +19,16 @@ api_router.include_router(
     admin_router.router,
     prefix="/admin",
     tags=["admin"],
+)
+api_router.include_router(
+    builder_router.router,
+    prefix="/builder",
+    tags=["builder"],
+    dependencies=[Depends(get_current_user)],
+)
+api_router.include_router(
+    dashboard_builder_router.router,
+    prefix="/builder",
+    tags=["dashboard-builder"],
+    dependencies=[Depends(get_current_user)],
 )

@@ -13,4 +13,5 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active       = Column(Boolean, default=True)
     is_admin        = Column(Boolean, default=False)
+    is_builder      = Column(Boolean, default=False)
     dashboards      = Column(JSON, default=lambda: ["sales"])

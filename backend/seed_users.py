@@ -22,6 +22,7 @@ from app.models.base import Base
 from app.models.user import User
 from app.models.organisation import Organisation
 from app.models.datasource import DataSource
+from app.models.dashboard_builder import MasterDashboard, SubDashboard, ChartWidget
 from app.auth.security import hash_password
 
 
@@ -41,6 +42,9 @@ async def _migrate_users_table(conn):
     migrations = [
         "ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE",
         "ALTER TABLE users ADD COLUMN IF NOT EXISTS organisation_id INTEGER",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS is_builder BOOLEAN DEFAULT FALSE",
+        "ALTER TABLE chart_widgets ADD COLUMN IF NOT EXISTS master_dashboard_id INTEGER REFERENCES master_dashboards(id) ON DELETE CASCADE",
+        "ALTER TABLE chart_widgets ALTER COLUMN sub_dashboard_id DROP NOT NULL",
     ]
     for sql in migrations:
         await conn.execute(text(sql))
@@ -54,10 +58,16 @@ async def _create_new_tables(conn):
         tables=[
             Organisation.__table__,
             DataSource.__table__,
+            MasterDashboard.__table__,
+            SubDashboard.__table__,
+            ChartWidget.__table__,
         ],
     ))
     print("  CREATE   organisations table (if not exists)")
     print("  CREATE   data_sources table (if not exists)")
+    print("  CREATE   master_dashboards table (if not exists)")
+    print("  CREATE   sub_dashboards table (if not exists)")
+    print("  CREATE   chart_widgets table (if not exists)")
 
 
 async def list_users():

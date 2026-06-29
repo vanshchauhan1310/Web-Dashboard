@@ -66,6 +66,7 @@ class UserOut(BaseModel):
     dashboards: list[str]
     is_active: bool
     is_admin: bool
+    is_builder: bool = False
 
     class Config:
         from_attributes = True
@@ -77,6 +78,7 @@ class UserCreate(BaseModel):
     full_name: Optional[str] = None
     organisation_id: Optional[int] = None
     dashboards: list[str] = ["sales"]
+    is_builder: bool = False
 
 
 class UserUpdate(BaseModel):
@@ -84,6 +86,7 @@ class UserUpdate(BaseModel):
     organisation_id: Optional[int] = None
     dashboards: Optional[list[str]] = None
     is_active: Optional[bool] = None
+    is_builder: Optional[bool] = None
 
 
 class ResetPasswordIn(BaseModel):
@@ -279,6 +282,7 @@ async def _enrich_user(user: User, db: AsyncSession) -> UserOut:
         company=user.company, organisation_id=user.organisation_id,
         org_name=org_name, dashboards=user.dashboards or [],
         is_active=user.is_active, is_admin=user.is_admin,
+        is_builder=user.is_builder,
     )
 
 
@@ -327,6 +331,7 @@ async def create_org_user(
         hashed_password=hash_password(body.password),
         is_active=True,
         is_admin=False,
+        is_builder=body.is_builder,
         dashboards=dashboards,
     )
     db.add(user)
@@ -356,6 +361,8 @@ async def update_user(
         user.dashboards = body.dashboards
     if body.is_active is not None:
         user.is_active = body.is_active
+    if body.is_builder is not None:
+        user.is_builder = body.is_builder
 
     await db.commit()
     await db.refresh(user)
